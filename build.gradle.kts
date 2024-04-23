@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.9.0"
@@ -9,10 +8,11 @@ plugins {
 }
 
 group = "com.runemate"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 gradlePlugin {
     website = "https://www.runemate.com"
+    vcsUrl = "git@github.com:RuneMate/runemate-gradle-plugin.git"
     plugins {
         create("runemateGradlePlugin") {
             id = "com.runemate.gradle-plugin"
