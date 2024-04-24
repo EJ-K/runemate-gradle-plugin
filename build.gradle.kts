@@ -12,14 +12,14 @@ version = "1.0"
 
 gradlePlugin {
     website = "https://www.runemate.com"
-    vcsUrl = "git@github.com:RuneMate/runemate-gradle-plugin.git"
+    vcsUrl = "https://github.com/RuneMate/runemate-gradle-plugin.git"
     plugins {
         create("runemateGradlePlugin") {
             id = "com.runemate.gradle-plugin"
             implementationClass = "com.runemate.gradle.RuneMatePlugin"
             description = "Configures your Gradle project for use with RuneMate"
             displayName = "RuneMate Development Plugin"
-            tags = setOf("runemate", "development", "plugin")
+            tags = setOf("runemate", "development")
         }
     }
 }
