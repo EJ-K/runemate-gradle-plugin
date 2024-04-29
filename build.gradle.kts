@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.runemate"
-version = "1.0"
+version = "1.1-SNAPSHOT"
 
 gradlePlugin {
     website = "https://www.runemate.com"
@@ -32,6 +32,8 @@ repositories {
 dependencies {
     implementation(gradleApi())
     implementation("org.openjfx:javafx-plugin:0.1.0")
+    implementation(kotlin("gradle-plugin"))
+    implementation("org.gradle.kotlin:gradle-kotlin-dsl-plugins:4.4.0")
 
     implementation(platform("com.fasterxml.jackson:jackson-bom:2.14.0"))
     implementation("com.fasterxml.jackson.core:jackson-core")

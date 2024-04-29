@@ -5,9 +5,10 @@ import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
-import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.maven
-import kotlin.io.path.relativeTo
+import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
+import java.nio.file.Path
 
 internal const val RUNEMATE = "runemate"
 internal const val JAVAFX_VERSION = "20"
@@ -34,11 +35,31 @@ internal val dependencyAllowList = arrayOf(
     "org.jetbrains:annotations"
 ).map(::Regex)
 
-internal val Project.sourceFiles
-    get() = extensions.getByType<JavaPluginExtension>()
-        .sourceSets
-        .flatMap { it.allSource }
-        .map { it.toPath().relativeTo(rootDir.toPath()) }
+internal val Project.kotlinSourceRoots
+    get() = extensions.findByType<KotlinProjectExtension>()
+        ?.sourceSets
+        ?.flatMap { it.kotlin.srcDirs }
+        ?.map { it.toPath() }
+
+internal val Project.javaSourceRoots
+    get() = extensions.findByType<JavaPluginExtension>()
+        ?.sourceSets
+        ?.flatMap { it.java.srcDirs }
+        ?.map { it.toPath() }
+
+internal val Project.resourceRoots
+    get() = extensions.findByType<JavaPluginExtension>()
+        ?.sourceSets
+        ?.flatMap { it.resources.srcDirs }
+        ?.map { it.toPath() }
+
+internal val Project.sourceRoots: Set<Path>
+    get() {
+        val kotlin = kotlinSourceRoots ?: emptyList()
+        val java = javaSourceRoots ?: emptyList()
+        val resources = resourceRoots ?: emptyList()
+        return (java + kotlin + resources).toSet()
+    }
 
 internal fun <T> SetProperty<T>.ifPresent(block: (Set<T>) -> Unit) = if (isPresent) block(get()) else Unit
 internal fun Property<Boolean>.ifTrue(block: () -> Unit) = if (isPresent && get()) block() else Unit
