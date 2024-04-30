@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.runemate.gradle
 
 import com.fasterxml.jackson.databind.MapperFeature

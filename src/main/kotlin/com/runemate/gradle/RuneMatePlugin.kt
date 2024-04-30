@@ -6,7 +6,10 @@ import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.JavaExec
+import org.gradle.api.tasks.bundling.Compression
+import org.gradle.api.tasks.bundling.Tar
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.*
 import org.openjfx.gradle.JavaFXOptions
@@ -15,14 +18,11 @@ import java.io.File
 
 class RuneMatePlugin : Plugin<Project> {
 
-    override fun apply(target: Project): Unit = with(target.rootProject) {
-        logger.lifecycle("Root project has plugin applied: {}", pluginManager.hasPlugin("com.runemate.gradle-plugin"))
-
-
+    override fun apply(target: Project): Unit = with(target) {
         configurePlugins()
         configureDependencies()
-        configureTasks()
-        apply<RuneMatePublishPlugin>()
+        createClientTask()
+        createPublishTasks()
     }
 
     private fun Project.configurePlugins() {
@@ -114,7 +114,7 @@ class RuneMatePlugin : Plugin<Project> {
         }
     }
 
-    private fun Project.configureTasks() {
+    private fun Project.createClientTask() {
         tasks.register("runClient", JavaExec::class) {
             group = RUNEMATE
             classpath = configurations.getByName("runtimeClasspath")
@@ -128,7 +128,11 @@ class RuneMatePlugin : Plugin<Project> {
             val ext = project.extensions.getByType<RuneMateExtension>()
             ext.autoLogin.ifTrue { args("--login") }
             ext.devMode.ifTrue { args("--dev") }
-            ext.botDirectories.ifPresent { args("-d", it.map { p -> file(p) }.joinToString(File.pathSeparator)) }
+            ext.botDirectories.ifPresent {
+                if (it.isNotEmpty()) {
+                    args("-d", it.map { p -> file(p) }.joinToString(File.pathSeparator))
+                }
+            }
 
             doFirst {
                 logger.lifecycle("Launching RuneMate client with args {}", args)

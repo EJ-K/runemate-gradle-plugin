@@ -47,7 +47,6 @@ open class RuneMateExtension(@Inject private val project: Project) {
      */
     val botDirectories: SetProperty<Any> = project.objects.setProperty()
 
-
     /**
      * Tells Gradle to allow dependency resolution for external dependencies. RuneMate does not support external dependencies
      * when building for the bot store. If you intend only to run bots locally then you can disable this check.
@@ -58,8 +57,7 @@ open class RuneMateExtension(@Inject private val project: Project) {
      */
     val allowExternalDependencies: Property<Boolean> = project.objects.property()
 
-
-    val submissionKey = project.objects.property<String>()
+    val submissionKey: Property<String> = project.objects.property()
 
     val manifests: NamedDomainObjectContainer<ManifestDeclaration> = project.container()
 
@@ -67,5 +65,6 @@ open class RuneMateExtension(@Inject private val project: Project) {
         action.execute(manifests)
     }
 
-    fun NamedDomainObjectContainer<ManifestDeclaration>.createManifest(name: String, block: ManifestDeclaration.() -> Unit) = create(name, block)
+    fun NamedDomainObjectContainer<ManifestDeclaration>.createManifest(name: String, block: ManifestDeclaration.() -> Unit) =
+        create(name, block)
 }
